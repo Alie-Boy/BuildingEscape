@@ -22,7 +22,8 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	void FindAndHandleInput();
+	//assigns InputHandle
+	void FindInputComponentAndBindActions();
 
 	void FindPhysicsComponent();
 
@@ -32,11 +33,16 @@ protected:
 	// called when grab key is released.
 	void Release();
 
+	FVector GetPlayerGrabReach() const;
+
 	FHitResult GetFirstPhysicsBodyInReach() const;
 
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	// provides initial value to LineTraceEnd and PlayerViewPoint, called in the constructor.
+	void FindPlayerGrabbingReach();
 
 private:
 	float Reach = 100.0f;
@@ -45,5 +51,9 @@ private:
 	
 	UInputComponent* InputHandle = nullptr;
 
-	
+	FVector PlayerViewpointLocation;
+
+	FRotator PlyerViewpointRotation;
+
+	FVector LineTraceEnd;
 };
