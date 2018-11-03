@@ -27,22 +27,19 @@ protected:
 
 	void FindPhysicsComponent();
 
-	//Raycast and grab objects in reach.
+	///Raycast and grab objects in reach.
 	void Grab();
 
-	// called when grab key is released.
+	/// called when grab key is released.
 	void Release();
 
-	FVector GetPlayerGrabReach() const;
+	FVector GetPlayerGrabReach();
 
-	FHitResult GetFirstPhysicsBodyInReach() const;
+	FHitResult GetFirstPhysicsBodyInReach();
 
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-	// provides initial value to LineTraceEnd and PlayerViewPoint, called in the constructor.
-	void FindPlayerGrabbingReach();
 
 private:
 	float Reach = 100.0f;
@@ -52,8 +49,4 @@ private:
 	UInputComponent* InputHandle = nullptr;
 
 	FVector PlayerViewpointLocation;
-
-	FRotator PlyerViewpointRotation;
-
-	FVector LineTraceEnd;
 };

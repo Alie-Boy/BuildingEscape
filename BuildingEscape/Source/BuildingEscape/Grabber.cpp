@@ -13,7 +13,6 @@ UGrabber::UGrabber()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-	FindPlayerGrabbingReach();
 	// ...
 }
 
@@ -69,16 +68,17 @@ void UGrabber::Release()
 }
 
 
-FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
+FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 {
 	// Line trace (AKA ray cast) out to reach distance.1
 	FHitResult Hit;
 	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
+	FVector LineTraceEnd = GetPlayerGrabReach();
 
 	GetWorld()->LineTraceSingleByObjectType(
 		OUT Hit,
 		PlayerViewpointLocation,
-		LineTraceEnd,
+		GetPlayerGrabReach(),
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
 		TraceParameters
 	);
@@ -111,25 +111,20 @@ void UGrabber::FindInputComponentAndBindActions()
 
 void UGrabber::FindPhysicsComponent()
 {
-
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 	if (PhysicsHandle)
-	{
 		UE_LOG(LogTemp, Warning, TEXT("Physics handle component found in %s"), *GetOwner()->GetName())
-	}
 	else
-	{
 		UE_LOG(LogTemp, Error, TEXT("No physics handle component in %s"), *GetOwner()->GetName())
-	}
 }
 
-FVector UGrabber::GetPlayerGrabReach() const { return LineTraceEnd; }
-
-void UGrabber::FindPlayerGrabbingReach()
+FVector UGrabber::GetPlayerGrabReach()
 {
+	FVector PlayerViewpointLocation;
+	FRotator PlyerViewpointRotation;
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
 		OUT PlayerViewpointLocation,
 		OUT PlyerViewpointRotation
 	);
-	LineTraceEnd = PlayerViewpointLocation + PlyerViewpointRotation.Vector()*Reach;
+	return PlayerViewpointLocation + PlyerViewpointRotation.Vector()*Reach;;
 }
